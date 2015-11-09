@@ -1,6 +1,7 @@
 package com.github.kb36.imagesearch;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
      * @param resource
      */
     public CustomAdapter(Context context, int resource, List<QueryResult.Result> data) {
-        super(context, resource, data);
+        super(context, 0, data);
         mContext = context;
         mResource = resource;
         mInflater = (LayoutInflater)context.getSystemService
@@ -44,18 +45,37 @@ public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) {
-            convertView  = mInflater.inflate(mResource, parent, false);
+        SquaredImageView view = (SquaredImageView)convertView;
+        if(view == null) {
+            view = new SquaredImageView(mContext);
+            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //convertView  = mInflater.inflate(mResource, parent, false);
         }
 
         QueryResult.Result res = getItem(position);
-        Log.d(TAG, "Getting the view at position:" + position);
+        //Log.d(TAG, "Getting the view at position:" + position);
         Picasso.with(mContext)
                 .load(res.tbUrl)
-                .resize(450, 450)
-                .centerCrop()
-                .into((ImageView) convertView);
+                .fit()
+                .placeholder(R.drawable.placeholder)
+                .tag(mContext)
+                .into(view);
 
-        return convertView;
+        return view;
+    }
+
+    private final class SquaredImageView extends ImageView {
+        public SquaredImageView(Context context) {
+            super(context);
+        }
+
+        public SquaredImageView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
+        }
     }
 }

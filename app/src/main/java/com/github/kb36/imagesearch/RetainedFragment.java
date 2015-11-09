@@ -9,17 +9,10 @@ import android.os.Bundle;
 /**
  * Created by nagarjuna.t1 on 10/23/2015.
  */
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RetainedFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RetainedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RetainedFragment extends Fragment {
     private boolean mIsLoadingComplete;
     private List<QueryResult.Result> mResults;
+    private String query;
     public RetainedFragment() {
         if(mResults == null) {
             mResults = new ArrayList<QueryResult.Result>();
@@ -47,11 +40,22 @@ public class RetainedFragment extends Fragment {
     public void resetData() {
         mResults.clear();
     }
+    public void resetLoadComplete() {
+        mIsLoadingComplete = false;
+    }
     public void setLoadComplete() {
         mIsLoadingComplete = true;
     }
 
     public boolean isLoadComplete() {
         return mIsLoadingComplete;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String _query) {
+        query = _query;
     }
 }
