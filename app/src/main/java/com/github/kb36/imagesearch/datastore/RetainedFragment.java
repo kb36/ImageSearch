@@ -1,12 +1,15 @@
-package com.github.kb36.imagesearch;
+package com.github.kb36.imagesearch.datastore;
 import android.app.Fragment;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.Bundle;
+import com.github.kb36.imagesearch.model.QueryResult;
+
 /**
+ * Mainly used for saving data across configuration changes.
+ * This fragment doesn't have an UI.
  * Created by nagarjuna.t1 on 10/23/2015.
  */
 public class RetainedFragment extends Fragment {
@@ -27,6 +30,10 @@ public class RetainedFragment extends Fragment {
 
     public List<QueryResult.Result> getData() {
         return mResults;
+    }
+
+    public QueryResult.Result getDataItem(int pos) {
+        return mResults.get(pos);
     }
 
     public void addData(List<QueryResult.Result> data) {

@@ -1,4 +1,4 @@
-package com.github.kb36.imagesearch;
+package com.github.kb36.imagesearch.model;
 
 import java.util.Map;
 
@@ -7,6 +7,8 @@ import retrofit.http.GET;
 import retrofit.http.QueryMap;
 
 /**
+ * Interface for configuring retrofit for fetching
+ * the images
  * Created by nagarjuna.t1 on 10/23/2015.
  */
 public interface QueryResultFetcher {

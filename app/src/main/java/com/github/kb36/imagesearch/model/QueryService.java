@@ -1,4 +1,4 @@
-package com.github.kb36.imagesearch;
+package com.github.kb36.imagesearch.model;
 
 import android.util.Log;
 
@@ -12,20 +12,28 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
+ * class for fetching data
  * Created by nagarjuna.t1 on 10/23/2015.
  */
-public class QueryService {
+public final class QueryService {
     private static final String LOG_TAG = "QueryService";
     private boolean IS_RUNNING = false;
     private static final String API_URL = "http://ajax.googleapis.com";
     Retrofit mRetrofit;
     public QueryService() {
+        //configure retrofit
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
+    /**
+     * Queries the given url and fetches the data
+     * @param query query word
+     * @param begin the position from where to fetch the results
+     * @param iResultsAvailable callback to populate results
+     */
     public void query(String query, int begin, final IResultsAvailable iResultsAvailable)  {
         Log.d(LOG_TAG, "Received query: " + query + " begin: "+ begin);
         QueryResultFetcher qrf = mRetrofit.create(QueryResultFetcher.class);
@@ -55,6 +63,10 @@ public class QueryService {
         });
     }
 
+    /**
+     * returns whether current query is running
+     * @return boolean
+     */
     public boolean isRunning() {
         return IS_RUNNING;
     }

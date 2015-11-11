@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.github.kb36.imagesearch.ImageGridResults">
-<!--
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/results"
-        android:id="@+id/textView" /> -->
 
     <GridView
         android:layout_width="wrap_content"
@@ -23,4 +17,12 @@
         android:padding="5dp"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp" />
+    <ImageView
+        android:id="@+id/image_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:src="@drawable/image_search_background"
+        android:scaleType="fitCenter"
+        android:visibility="gone"/>
 </LinearLayout>

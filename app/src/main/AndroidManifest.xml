@@ -6,11 +6,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/image_search_background"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".ImageGridActivity"
+        <activity android:name=".ui.ImageGridActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +23,9 @@
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <provider android:name=".RecentQueryProvider"
-            android:authorities="com.github.kb36.imagesearch.RecentQueryProvider" />
+        <activity android:name=".ui.ImageDetailActivity"/>
+        <provider android:name=".provider.RecentQueryProvider"
+            android:authorities="com.github.kb36.imagesearch.provider.RecentQueryProvider" />
     </application>
 
 </manifest>

@@ -1,19 +1,21 @@
-package com.github.kb36.imagesearch;
+package com.github.kb36.imagesearch.adapter;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.github.kb36.imagesearch.R;
+import com.github.kb36.imagesearch.model.QueryResult;
+import com.github.kb36.imagesearch.ui.SquaredImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 /**
+ * Customer adapter which backs the image grid view
  * Created by nagarjuna.t1 on 10/23/2015.
  */
 public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
@@ -37,6 +39,7 @@ public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
 
 
     /**
+     * Method for loading image item into grid view
      * {@inheritDoc}
      *
      * @param position
@@ -49,7 +52,6 @@ public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
         if(view == null) {
             view = new SquaredImageView(mContext);
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //convertView  = mInflater.inflate(mResource, parent, false);
         }
 
         QueryResult.Result res = getItem(position);
@@ -62,20 +64,5 @@ public class CustomAdapter extends ArrayAdapter<QueryResult.Result> {
                 .into(view);
 
         return view;
-    }
-
-    private final class SquaredImageView extends ImageView {
-        public SquaredImageView(Context context) {
-            super(context);
-        }
-
-        public SquaredImageView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
-        }
     }
 }

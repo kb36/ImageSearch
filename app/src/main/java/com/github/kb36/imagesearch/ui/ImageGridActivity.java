@@ -1,4 +1,4 @@
-package com.github.kb36.imagesearch;
+package com.github.kb36.imagesearch.ui;
 
 import android.app.FragmentManager;
 import android.app.SearchManager;
@@ -12,9 +12,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.github.kb36.imagesearch.adapter.CustomAdapter;
+import com.github.kb36.imagesearch.R;
+import com.github.kb36.imagesearch.provider.RecentQueryProvider;
+import com.github.kb36.imagesearch.datastore.RetainedFragment;
+import com.github.kb36.imagesearch.model.IResultsAvailable;
+import com.github.kb36.imagesearch.model.QueryResult;
+import com.github.kb36.imagesearch.model.QueryService;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -39,12 +50,16 @@ public class ImageGridActivity extends AppCompatActivity implements IResultsAvai
             fm.beginTransaction().add(mDataFragment, RETAINED_FRAGMENT_TAG).commit();
         }
         mGridView = (GridView) findViewById(R.id.gridView);
+        mGridView.setEmptyView((ImageView) findViewById(R.id.image_background));
         init();
     }
 
+    /**
+     * initialize the system
+     */
     private void init() {
         mQs = new QueryService();
-        mAdapter = new CustomAdapter(this, R.layout.image_item_layout, mDataFragment.getData());
+        mAdapter = new CustomAdapter(this, 0, mDataFragment.getData());
         mGridView.setAdapter(mAdapter);
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -55,9 +70,9 @@ public class ImageGridActivity extends AppCompatActivity implements IResultsAvai
                 } else {
                     picasso.pauseTag(ImageGridActivity.this);
                 }
-                if(scrollState == SCROLL_STATE_IDLE) {
+                if (scrollState == SCROLL_STATE_IDLE) {
                     Log.d(TAG, "last visible: " + mGridView.getLastVisiblePosition());
-                    if(mGridView.getLastVisiblePosition() == mDataFragment.getData().size()-1) {
+                    if (mGridView.getLastVisiblePosition() == mDataFragment.getData().size() - 1) {
                         if (canFetchMore()) {
                             mQs.query(mDataFragment.getQuery(), mDataFragment.getData().size(), ImageGridActivity.this);
                         }
@@ -70,9 +85,22 @@ public class ImageGridActivity extends AppCompatActivity implements IResultsAvai
 
             }
         });
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                QueryResult.Result result = mDataFragment.getDataItem(position);
+                Intent intent = new Intent(ImageGridActivity.this, ImageDetailActivity.class);
+                intent.putExtra("url", result.url);
+                startActivity(intent);
+            }
+        });
         mAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Handles new search query
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -92,12 +120,21 @@ public class ImageGridActivity extends AppCompatActivity implements IResultsAvai
         }
     }
 
+    /**
+     * call implemented for processing resutls
+     * @param qr result set
+     */
     @Override
     public void onResultsAvailable(QueryResult qr) {
         Log.d(TAG, "Received results");
         if(qr.responseStatus != 200)
             mDataFragment.setLoadComplete();
         else {
+            if(qr.responseData.results.size() == 0 &&
+                    mDataFragment.getData().size() == 0) {
+                Toast.makeText(ImageGridActivity.this, "No Results found", Toast.LENGTH_LONG).show();
+                return;
+            }
             if(qr.responseData.results.size() < 4)
                 mDataFragment.setLoadComplete();
             mDataFragment.addData(qr.responseData.results);
@@ -109,6 +146,10 @@ public class ImageGridActivity extends AppCompatActivity implements IResultsAvai
         }
     }
 
+    /**
+     * checks whether more data can be fetched.
+     * @return
+     */
     private boolean canFetchMore() {
         Log.d(TAG, "mIsLoadComplete: " + mDataFragment.isLoadComplete() + " " + " is_running: " + mQs.isRunning());
         return !mDataFragment.isLoadComplete() && !mQs.isRunning();
